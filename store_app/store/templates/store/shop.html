@@ -1,0 +1,74 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-5">Shop Our Products</h2>
+
+    {% for category, products in products_by_category.items %}
+    <div class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <h3 class="h4 mb-0">{{ category.name }}</h3>
+            <span class="badge bg-primary ms-3">{{ products|length }} items</span>
+        </div>
+        
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-lg-3 col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-img-top ratio ratio-1x1">
+                        <img src="{{ product.image.url }}" class="object-fit-cover" alt="{{ product.name }}">
+                    </div>
+                    
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted description-text" 
+                           data-bs-toggle="tooltip" 
+                           data-bs-placement="bottom"
+                           title="{{ product.description }}">
+                            {{ product.description }}
+                        </p>
+                        
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="h5 mb-0">${{ product.price }}</span>
+                                {% if product.specification %}
+                                <a href="{{ product.specification.url }}" class="btn btn-sm btn-outline-secondary" download>
+                                    <i class="bi bi-file-earmark-pdf"></i> Specs
+                                </a>
+                                {% endif %}
+                            </div>
+                            
+                            <a href="{% url 'store:add_to_cart' product.id %}" class="btn btn-primary w-100">
+                                <i class="bi bi-cart-plus"></i> Add to Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .description-text {
+        display: -webkit-box;
+        line-clamp: 3;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 4.5em;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}
